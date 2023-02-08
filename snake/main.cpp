@@ -113,16 +113,24 @@ int main() {
 			switch (_getch())
 			{
 			case 'w':
-				snake_body[0][2] = -2;
+				if (snake_body[0][2] != 2) {
+					snake_body[0][2] = -2;
+				}
 				break;
 			case 's':
-				snake_body[0][2] = 2;
+				if (snake_body[0][2] != -2) {
+					snake_body[0][2] = 2;
+				}
 				break;
 			case 'd':
-				snake_body[0][2] = 1;
+				if (snake_body[0][2] != -1) {
+					snake_body[0][2] = 1;
+				}
 				break;
 			case 'a':
-				snake_body[0][2] = -1;
+				if (snake_body[0][2] != 1) {
+					snake_body[0][2] = -1;
+				}
 				break;
 			}
 			
