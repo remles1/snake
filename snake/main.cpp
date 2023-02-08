@@ -12,66 +12,26 @@ int pos_y = height/2;																	//
 																						//
 int apple_x = 0;
 int apple_y = 0;
-bool generate_apple = true;
+bool bool_generate_apple = true;
 
 int score = 0;
 int difficulty_start = 100;
 int difficulty = difficulty_start;
 int difficulty_jump = 1;
 
-void gotoxy(int x, int y) {
-	COORD coord;
-	coord.X = x;
-	coord.Y = y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
+void gotoxy(int x, int y);
 
-void print_board() {
-	for (int i = 0; i <= width; i++) {
-		for (int j = 0; j <= height; j++) {
-			if (i == 0 || i == width || j == 0 || j == height) {
-				gotoxy(i, j);
-				std::cout << "*";
-			}
-		}
-	}
+void print_board();
 
-	gotoxy(width+10,height/2);
-	std::cout << "SCORE: 0";
-}
+void move_head();
 
-void move_head() {
-	if (snake_body[0][2] == 1) {
-		pos_x++;
-	}
-	else if (snake_body[0][2] == -1) {
-		pos_x--;
-	}
-	else if (snake_body[0][2] == 2) {
-		pos_y++;
-	}
-	else if (snake_body[0][2] == -2) {
-		pos_y--;
-	}
-}
+bool check_if_hit_body();
 
-bool check_if_hit_body() {
-	int count = 0;
-	for (int i = 1; i < snake_body.size(); i++) {
-		if (pos_x == snake_body[i][0] && pos_y == snake_body[i][1]) {
-			count++;
-			if (count > 1) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
+bool check_if_apple_properely_placed();
 
-void game_over() {
-	std::cout << "GAME OVER";
-	while (true);
-}
+void generate_apple();
+
+void game_over();
 
 int main() {
 	srand(time(NULL));
@@ -101,10 +61,12 @@ int main() {
 
 
 	while (true) {
-		if (generate_apple) {
-			apple_x = rand() % (width - 2) + 1;
-			apple_y = rand() % (height - 2) + 1;
-			generate_apple = false;
+		if (bool_generate_apple) {
+			generate_apple();
+			while (!check_if_apple_properely_placed()) {
+				generate_apple();
+			}
+			bool_generate_apple = false;
 		}
 		gotoxy(apple_x, apple_y);
 		putchar('X');
@@ -152,7 +114,7 @@ int main() {
 		snake_body.pop_back();
 		
 		if (pos_x == apple_x && pos_y == apple_y) {
-			generate_apple = true;
+			bool_generate_apple = true;
 			
 			switch (snake_body[snake_body.size()-1][2])
 			{
@@ -184,6 +146,74 @@ int main() {
 
 		Sleep(difficulty);
 	}
+}
+
+void gotoxy(int x, int y) {
+	COORD coord;
+	coord.X = x;
+	coord.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void print_board() {
+	for (int i = 0; i <= width; i++) {
+		for (int j = 0; j <= height; j++) {
+			if (i == 0 || i == width || j == 0 || j == height) {
+				gotoxy(i, j);
+				std::cout << "*";
+			}
+		}
+	}
+
+	gotoxy(width + 10, height / 2);
+	std::cout << "SCORE: 0";
+}
+
+void move_head() {
+	if (snake_body[0][2] == 1) {
+		pos_x++;
+	}
+	else if (snake_body[0][2] == -1) {
+		pos_x--;
+	}
+	else if (snake_body[0][2] == 2) {
+		pos_y++;
+	}
+	else if (snake_body[0][2] == -2) {
+		pos_y--;
+	}
+}
+
+bool check_if_hit_body() {
+	int count = 0;
+	for (int i = 1; i < snake_body.size(); i++) {
+		if (pos_x == snake_body[i][0] && pos_y == snake_body[i][1]) {
+			count++;
+			if (count > 1) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool check_if_apple_properely_placed() {
+	for (int i = 0; i < snake_body.size(); i++) {
+		if (apple_x == snake_body[i][0] && apple_y == snake_body[i][1]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void generate_apple() {
+	apple_x = rand() % (width - 2) + 1;
+	apple_y = rand() % (height - 2) + 1;
+}
+
+void game_over() {
+	std::cout << "GAME OVER";
+	while (true);
 }
 
 
