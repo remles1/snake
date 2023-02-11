@@ -44,12 +44,17 @@ int main() {
 	cfi.dwFontSize.Y = 16;                  
 	cfi.FontFamily = FF_DONTCARE;
 	cfi.FontWeight = FW_NORMAL;
-	SetCursor(NULL);
 	std::wcscpy(cfi.FaceName, L"Terminal");
 	
 	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
 
-	
+	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	CONSOLE_CURSOR_INFO     cursorInfo;
+
+	GetConsoleCursorInfo(out, &cursorInfo);
+	cursorInfo.bVisible = FALSE; // set the cursor visibility
+	SetConsoleCursorInfo(out, &cursorInfo);
 
 	print_board();														//	 -2	
 																		// -1	1
